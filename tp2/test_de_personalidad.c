@@ -249,7 +249,7 @@ char escandaloso(int puntaje) {
  * Post: Imprimirá por pantalla los datos adicionales de PANDA.
 */
 void mostrar_datos_panda() {
-    printf(BOLDGREEN "Algunos datos sobre Panda:\n" RESET);
+    printf(BOLDGREEN "Algunos datos sobre Panda antes de empezar:\n" RESET);
     printf(CYAN "1-" RESET " Inseguro, sensible, se enamora rapido, tierno, vegetariano.\n");
     printf(CYAN "2-" RESET " El celular es su alma en forma rectangular.\n");
     printf(CYAN "3-" RESET " Usa lentes de contacto.\n");
@@ -263,7 +263,7 @@ void mostrar_datos_panda() {
  * Post: Imprimirá por pantalla los datos adicionales de POLAR.
 */
 void mostrar_datos_polar() {
-    printf(BOLDGREEN "Algunos datos sobre Polar:\n" RESET);
+    printf(BOLDGREEN "Algunos datos sobre Polar antes de empezar:\n" RESET);
     printf(CYAN "1-" RESET " Callado, reacciona rápido, habla en tercera persona, demuestra pobremente sus emociones, responsable y maduro, valiente.\n");
     printf(CYAN "2-" RESET " Le encanta la limpieza ya que la mayor parte de su tiempo pasa haciendo eso, y la cocina como podemos ver casi siempre.\n");
     printf(CYAN "3-" RESET " Sabe artes marciales, yoga, bailar, patinar sobre hielo y tejer.\n");
@@ -277,7 +277,7 @@ void mostrar_datos_polar() {
  * Post: Imprimirá por pantalla los datos adicionales de PARDO.
 */
 void mostrar_datos_pardo() {
-    printf(BOLDGREEN "Algunos datos sobre Pardo:\n" RESET); 
+    printf(BOLDGREEN "Algunos datos sobre Pardo antes de empezar:\n" RESET); 
     printf(CYAN "1-" RESET " Familiarizado con el área forestal.\n");
     printf(CYAN "2-" RESET " Líder, hiperactivo, ruidoso, charlatan, alegre, optimista, extrovertido, quien hace los planes, glotón, sociable, disfruta de la atención, celoso, ingenuo.\n");
     printf(CYAN "3-" RESET " Hace todo lo posible para hacer lo correcto.\n");
@@ -298,28 +298,23 @@ void mostrar_resultado(char escandaloso) {
     switch (escandaloso) {
         case PANDA:
             printf(BOLDGREEN "TU RESULTADO ES:" BOLDCYAN " - Panda (%c) - \n" RESET, PANDA);
-            printf("¿Tienes cara de chino, o me parece?\n");
             mostrar_separador();
             mostrar_datos_panda();
             break;
     
         case POLAR:
             printf(BOLDGREEN "TU RESULTADO ES:" BOLDCYAN " - Polar (%c) - \n" RESET, POLAR);
-            printf("¿Has visitado el polo norte?\n");
             mostrar_separador();
             mostrar_datos_polar();
             break;
     
         case PARDO:
             printf(BOLDGREEN "TU RESULTADO ES:" BOLDCYAN " - Pardo (%c) - \n" RESET, PARDO);
-            printf("¿Conoces personalmente a Vladimir Putin?\n");
             mostrar_separador();
             mostrar_datos_pardo();
             break;
     }
 
-    mostrar_separador();
-    printf(GREEN "¿Te gustó? En caso de que no, " BLUE "@DaniHv" GREEN " va a llorar. ¡Tchüss!\n" RESET);
     mostrar_separador();
 }
 
@@ -329,7 +324,7 @@ void mostrar_resultado(char escandaloso) {
  * Post: Realizará el test de personalidad al usuario solicitando sus elecciones en CANAL, ALIMENTO, PISO y Grito
  *       Y actualiza el puntero al personaje resultante en base a las elecciones y fórmulas aplicadas.
  */
-void iniciar_test_personalidad(char* personaje) {
+void test_de_personalidad(char* personalidad_detectada) {
     char canal;
     char alimento;
     int piso;
@@ -341,5 +336,5 @@ void iniciar_test_personalidad(char* personaje) {
     solicitar_grito(&grito);
 
     int puntaje = puntaje_total(multiplicador_canal(canal), puntaje_alimento(alimento), piso, grito);
-    char personaje = escandaloso(puntaje);
+    (*personalidad_detectada) = escandaloso(puntaje);
 }

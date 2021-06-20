@@ -1,62 +1,81 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <unistd.h>
+#include <ctype.h>
+#include <time.h>
+#include "test_de_personalidad.h"
 #include "osos_contra_reloj.h"
 #include "utiles.h"
 
-const char PANDA = 'P';
-const char POLAR = 'P';
-const char PARDO = 'G';
+/* CONSTANTES DE COLOR PARA TERMINAL */
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define BLUE    "\033[34m"
+#define CYAN    "\033[36m"
+#define BOLDGREEN   "\033[1m\033[32m"
+#define BOLDYELLOW  "\033[1m\033[33m"
+#define BOLDBLUE    "\033[1m\033[34m"
+#define BOLDCYAN    "\033[1m\033[36m"
 
-const char ARRIBA = 'W';
-const char ABAJO = 'S';
-const char IZQUIERDA = 'A';
-const char DERECHA = 'D';
-const char LINTERNA = 'L';
-const char VELA = 'V';
-const char BENGALA = 'B';
-const char TIEMPO = 'T';
+const int TIEMPO_MAXIMO = 120;
 
-const char PERSONAJE = 'P';
-const char ARBOL = 'A';
+void mostrar_bienvenida() {
+    printf("\n");
+    sleep(10);
+}
 
-bool movimiento_valido(char movimiento) {
-  return (
-    movimiento == ARRIBA || 
-    movimiento == ABAJO ||
-    movimiento == IZQUIERDA ||
-    movimiento == DERECHA ||
-    movimiento == LINTERNA ||
-    movimiento == VELA ||
-    movimiento == BENGALA ||
-    movimiento == TIEMPO
-  );
+void mostrar_inicio() {
+    printf("\n");
+    sleep(10);
 }
 
 void solicitar_movimiento(char* movimiento) {
-  printf('Es hora de moverse y hacer algo! Qué quieres hacer?');
-  scanf(' %c', movimiento);
+    printf("Es hora de moverse y hacer algo! Qué quieres hacer?");
+    scanf(" %c", movimiento);
+    (*movimiento) = (char) toupper(*movimiento);
+
+    while(es_jugada_valida(*movimiento)) {
+        printf("Jugada inválida!");
+        scanf(" %c", movimiento);
+        (*movimiento) = (char) toupper(*movimiento);
+    }
+}
+
+void mostrar_victoria() {
 
 }
 
-bool chloe_encontrada(coordenada_t personaje, coordenada_t chloe) {
-  return (personaje.fil == chloe.fil && personaje.col == chloe.col);
+void mostrar_derrota() {
+
 }
 
 int main() {
-  char personaje;
-  juego_t juego;
+    srand ((unsigned) time(NULL));
+    char personaje;
+    juego_t juego;
 
-  iniciar_test_personalidad(&personaje);
-  inicializar_juego(&juego, personaje);
+    mostrar_bienvenida();
+    personalidad_detectada(&personaje);
 
-  while(!chloe_encontrada(juego.personaje.posicion, juego.amiga_chloe)) {
-    char movimiento;
+    mostrar_inicio();
+    inicializar_juego(&juego, personaje);
 
-    solicitar_movimiento(&movimiento);
-    realizar_jugada(&juego, movimiento);
+    while(estado_juego(juego)) {
+        char movimiento;
 
-    mostrar_juego(juego);
-  }
+        solicitar_movimiento(&movimiento);
+        realizar_jugada(&juego, movimiento);
 
-  return 0;
+        mostrar_juego(juego);
+    }
+
+    double tiempo = detener_cronometro();
+    if((tiempo + juego.personaje.tiempo_perdido) < TIEMPO_MAXIMO) {
+        mostrar_victoria();
+    } else {
+        mostrar_derrota();
+    }
+
+    return 0;
 }
