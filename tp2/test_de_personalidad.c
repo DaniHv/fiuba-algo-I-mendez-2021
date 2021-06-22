@@ -1,18 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "test_de_personalidad.h"
-
-/* CONSTANTES DE COLOR PARA TERMINAL */
-#define RESET   "\033[0m"
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define BLUE    "\033[34m"
-#define CYAN    "\033[36m"
-#define BOLDGREEN   "\033[1m\033[32m"
-#define BOLDYELLOW  "\033[1m\033[33m"
-#define BOLDBLUE    "\033[1m\033[34m"
-#define BOLDCYAN    "\033[1m\033[36m"
+#include "utilidades_print.h"
 
 #define ANIME 'A'
 #define MUSICAPOP 'M'
@@ -42,14 +33,6 @@
 #define MAX_PUNTAJE_PANDA 43
 #define MIN_PUNTAJE_PARDO 44
 #define MAX_PUNTAJE_PARDO 63
-
-/*
- * Pre: -
- * Post: Imprimirá por pantalla una línea separadora.
- */
-void mostrar_separador() {
-    printf("*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*\n");
-}
 
 /*
  * Pre: -
@@ -291,7 +274,7 @@ void mostrar_datos_pardo() {
  * Post: Imprimirá por pantalla el resultado recibido y los datos adicionales correspondientes.
  */
 void mostrar_resultado(char escandaloso) {
-    printf(BOLDYELLOW "Ahora vamos con los resultados (fuera más interesante con delay de intriga, pero " BOLDBLUE "@DaniHv" BOLDYELLOW " aún no sabe hacer timeouts en C, así que será instantáneo).\n" RESET);
+    printf(BOLDYELLOW "Ahora vamos con los resultados.\n" RESET);
     printf(BOLDYELLOW "**REDOBLE DE TAMBORES**\n" RESET);
     mostrar_separador();
 
@@ -318,7 +301,6 @@ void mostrar_resultado(char escandaloso) {
     mostrar_separador();
 }
 
-
 /*
  * Pre: -
  * Post: Realizará el test de personalidad al usuario solicitando sus elecciones en CANAL, ALIMENTO, PISO y Grito
@@ -330,11 +312,18 @@ void test_de_personalidad(char* personalidad_detectada) {
     int piso;
     int grito;
 
+    mostrar_bienvenida();
+
     solicitar_canal(&canal);
     solicitar_alimento(&alimento);
     solicitar_piso(&piso);
     solicitar_grito(&grito);
 
     int puntaje = puntaje_total(multiplicador_canal(canal), puntaje_alimento(alimento), piso, grito);
-    (*personalidad_detectada) = escandaloso(puntaje);
+    char resultado = escandaloso(puntaje);
+    (*personalidad_detectada) = resultado;
+
+    system("clear");
+    mostrar_resultado(resultado);
+    printf("\n");
 }
