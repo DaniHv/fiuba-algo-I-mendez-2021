@@ -7,10 +7,22 @@
 #include "test_de_personalidad.h"
 #include "osos_contra_reloj.h"
 #include "utiles.h"
-#include "utilidades_print.h"
 
-// Al ser true, permite jugar con el mapa totalmente visible.
-const bool DEBUG_MAPA = false;
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define BLUE    "\033[34m"
+#define CYAN    "\033[36m"
+#define BOLDGREEN   "\033[1m\033[32m"
+#define BOLDYELLOW  "\033[1m\033[33m"
+#define BOLDBLUE    "\033[1m\033[34m"
+#define BOLDCYAN    "\033[1m\033[36m"
+
+#define DELAY_CORTO 1
+#define DELAY_MEDIO 5
+#define DELAY_LARGO 10
+
+const bool DEBUG_MAPA = false; // Al ser true, permite jugar con el mapa totalmente visible.
 
 #define CHLOE 'C'
 #define ARBOL 'A'
@@ -40,11 +52,11 @@ const static double TIEMPO_MAXIMO = 120.00;
 
 const int MOVIMIENTOS_LINTERNA = 10;
 const int MOVIMIENTOS_PILA = 5;
-const int BONIFICACION_LINTERNA_PARDO = 50;
+const double BONIFICACION_LINTERNA_PARDO = 50.0;
 
-const int CANTIDAD_VELAS = 4;
+const int CANTIDAD_VELAS_MOCHILA = 4;
 const int MOVIMIENTOS_VELA = 5;
-const int BONIFICACION_VELAS_POLAR = 50;
+const double BONIFICACION_VELAS_POLAR = 50.0;
 
 const int MOVIMIENTOS_BENGALA = 3;
 const int BONIFICACION_BENGALAS_PANDA = 2;
@@ -52,17 +64,18 @@ const int BONIFICACION_BENGALAS_PANDA = 2;
 const double PENALIZACION_PIEDRA = 2.00;
 
 const double PENALIZACION_ARBOL = 1.00;
-const int BONIFICACION_ARBOL_PARDO = 50;
+const double BONIFICACION_ARBOL_PARDO = 50.0;
 
 const int NULO = -1;
 const static char VACIO = '-';
 
-const int CANTIDAD_ARBOLES = 350;
-const int CANTIDAD_PIEDRAS = 80;
-const int CANTIDAD_KOALAS = 1;
-const int CANTIDAD_PILAS = 30;
-const int CANTIDAD_VELAS = 30;
-const int CANTIDAD_BENGALAS = 10;
+const int CANTIDAD_ARBOLES_MAPA = 350;
+const int CANTIDAD_PIEDRAS_MAPA = 80;
+const int CANTIDAD_KOALAS_MAPA = 1;
+const int CANTIDAD_PILAS_MAPA = 30;
+const int CANTIDAD_VELAS_MAPA = 30;
+const int CANTIDAD_BENGALAS_MAPA = 10;
+const int CANTIDAD_KOALAS_INVOCAR = 1;
 
 const int JUGANDO = 0;
 const int FINALIZADO = NULO;
@@ -71,20 +84,28 @@ const int MIN_TIEMPO_VISIBILIDAD_PANDA = 30;
 
 const int MAX_DISTANCIA_BENGALA = 3;
 
-const char EMOJI_OSCURIDAD[10] = "\U00002B1B";
-const char EMOJI_CLARIDAD[10] = "\U00002B1C";
-const char EMOJI_PANDA[10] = "\U0001F43C";
-const char EMOJI_POLAR[10] = "\U0001F526";
-const char EMOJI_PARDO[10] = "\U0001F43B";
-const char EMOJI_LINTERNA[10] = "\U0001F526";
-const char EMOJI_PILA[10] = "\U0001F50B";
-const char EMOJI_ARBOL[10] = "\U0001F332";
-const char EMOJI_PIEDRA[10] = "\U0001FAA8";
-const char EMOJI_KOALA[10] = "\U0001F428";
-const char EMOJI_CHLOE[10] = "\U0001F467";
-const char EMOJI_VELA[10] = "\U0001F56F ";
-const char EMOJI_BENGALA[10] = "\U0001F9E8";
+const char EMOJI_OSCURIDAD[20] = "\U00002B1B";
+const char EMOJI_CLARIDAD[20] = "\U00002B1C";
+const char EMOJI_PANDA[20] = "\U0001F43C";
+const char EMOJI_POLAR[20] = "\U0001F43B\U0000200D\U00002744\U0000FE0F";
+const char EMOJI_PARDO[20] = "\U0001F43B";
+const char EMOJI_LINTERNA[20] = "\U0001F526";
+const char EMOJI_PILA[20] = "\U0001F50B";
+const char EMOJI_ARBOL[20] = "\U0001F332";
+const char EMOJI_PIEDRA[20] = "\U0001FAA8";
+const char EMOJI_KOALA[20] = "\U0001F428";
+const char EMOJI_CHLOE[20] = "\U0001F467";
+const char EMOJI_VELA[20] = "\U0001F56F ";
+const char EMOJI_BENGALA[20] = "\U0001F9E8";
 
+
+/*
+ * Pre: -
+ * Post: Imprimirá por pantalla una línea separadora.
+ */
+void static mostrar_separador() {
+    printf("*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*\n");
+}
 
 /*
  * Pre: Puede recibir una fila o columna específica a mantener, caso contrario enviar 'NULO'.
@@ -128,7 +149,7 @@ void agregar_herramienta_mochila(personaje_t* personaje, char tipo, int cantidad
     switch (tipo) {
         case LINTERNA:
             if (personaje->tipo == PARDO) {
-                movimientos = MOVIMIENTOS_LINTERNA + ((BONIFICACION_LINTERNA_PARDO / 100) * MOVIMIENTOS_LINTERNA);
+                movimientos = MOVIMIENTOS_LINTERNA + ((int) ((BONIFICACION_LINTERNA_PARDO / 100) * MOVIMIENTOS_LINTERNA));
             } else {
                 movimientos = MOVIMIENTOS_LINTERNA;
             }
@@ -164,7 +185,7 @@ void agregar_herramienta_mochila(personaje_t* personaje, char tipo, int cantidad
 /*
  * Pre:
  * Post: Posiciona al personaje elegido en una posición aleatoria en la primera columna e inicializa los valores (Tiempo perdido 0, sin elemento en uso y ultimo movimiento derecha).
- *       Llena la mochila, todos con 1 linterna y con la cantidad de velas (CANTIDAD_VELAS_PANDA, CANTIDAD_VELAS_PARDO, CANTIDAD_VELAS_POLAR) y bengalas según personaje.
+ *       Llena la mochila, todos con 1 linterna y con la cantidad de velas CANTIDAD_VELAS (Con + BONIFICACION_VELAS_POLAR% para POLAR) y BONIFICACION_BENGALAS_PANDA para PANDA.
  */
 void inicializar_personaje(personaje_t* personaje, char tipo_personaje) {
     coordenada_t posicion = generar_posicion_aleatoria(NULO, 0);
@@ -179,18 +200,18 @@ void inicializar_personaje(personaje_t* personaje, char tipo_personaje) {
     switch(tipo_personaje) {
         case PANDA:
             agregar_herramienta_mochila(personaje, LINTERNA, 1);
-            agregar_herramienta_mochila(personaje, VELA, CANTIDAD_VELAS);
+            agregar_herramienta_mochila(personaje, VELA, CANTIDAD_VELAS_MOCHILA);
             agregar_herramienta_mochila(personaje, BENGALA, BONIFICACION_BENGALAS_PANDA);
             break;
 
         case PARDO:
             agregar_herramienta_mochila(personaje, LINTERNA, 1);
-            agregar_herramienta_mochila(personaje, VELA, CANTIDAD_VELAS);
+            agregar_herramienta_mochila(personaje, VELA, CANTIDAD_VELAS_MOCHILA);
             break;
 
         case POLAR:
             agregar_herramienta_mochila(personaje, LINTERNA, 1);
-            agregar_herramienta_mochila(personaje, VELA, (CANTIDAD_VELAS + floor((BONIFICACION_VELAS_POLAR / 100) * CANTIDAD_VELAS)));
+            agregar_herramienta_mochila(personaje, VELA, (int) (CANTIDAD_VELAS_MOCHILA + ((BONIFICACION_VELAS_POLAR / 100) * CANTIDAD_VELAS_MOCHILA)));
             break;
     }
 }
@@ -332,7 +353,7 @@ void mostrar_ayuda() {
     printf("Si quieres reiniciar el juego, presiona (" BOLDGREEN "%c" RESET ") \n", REINICIAR);
     mostrar_separador();
 
-    sleep(DELAY_LARGO);
+    // sleep(DELAY_LARGO);
 }
 
 /*
@@ -346,14 +367,14 @@ void inicializar_juego(juego_t* juego, char tipo_personaje) {
     juego->chloe_visible = false;
 
     juego->cantidad_obstaculos = 0;
-    posicionar_elementos(juego, OBSTACULO, ARBOL, CANTIDAD_ARBOLES);
-    posicionar_elementos(juego, OBSTACULO, PIEDRA, CANTIDAD_PIEDRAS);
-    posicionar_elementos(juego, OBSTACULO, KOALA, CANTIDAD_KOALAS);
+    posicionar_elementos(juego, OBSTACULO, ARBOL, CANTIDAD_ARBOLES_MAPA);
+    posicionar_elementos(juego, OBSTACULO, PIEDRA, CANTIDAD_PIEDRAS_MAPA);
+    posicionar_elementos(juego, OBSTACULO, KOALA, CANTIDAD_KOALAS_MAPA);
 
     juego->cantidad_herramientas = 0;
-    posicionar_elementos(juego, HERRAMIENTA, PILA, CANTIDAD_PILAS);
-    posicionar_elementos(juego, HERRAMIENTA, VELA, CANTIDAD_VELAS);
-    posicionar_elementos(juego, HERRAMIENTA, BENGALA, CANTIDAD_BENGALAS);
+    posicionar_elementos(juego, HERRAMIENTA, PILA, CANTIDAD_PILAS_MAPA);
+    posicionar_elementos(juego, HERRAMIENTA, VELA, CANTIDAD_VELAS_MAPA);
+    posicionar_elementos(juego, HERRAMIENTA, BENGALA, CANTIDAD_BENGALAS_MAPA);
 
     mostrar_ayuda();
 
@@ -406,7 +427,7 @@ void recoger_herramienta(juego_t* juego) {
                 break;
         }
 
-        sleep(DELAY_CORTO);
+        // sleep(DELAY_CORTO);
     }
 }
 
@@ -415,16 +436,18 @@ void recoger_herramienta(juego_t* juego) {
  * Post: Disminuye un movimiento a la herramienta en uso, si llega a cero, elimina la herramienta.
  */
 void desgastar_herramienta(personaje_t* personaje) {
-    if (personaje->mochila[personaje->elemento_en_uso].movimientos_restantes == 0) {
-        if (personaje->mochila[personaje->elemento_en_uso].tipo != LINTERNA) {
-            personaje->cantidad_elementos --;
-            personaje->mochila[personaje->elemento_en_uso] = personaje->mochila[personaje->cantidad_elementos];
-        }
-        personaje->elemento_en_uso = NULO;
+    if (personaje->elemento_en_uso != NULO) {
+        if (personaje->mochila[personaje->elemento_en_uso].movimientos_restantes == 0) {
+            if (personaje->mochila[personaje->elemento_en_uso].tipo != LINTERNA) {
+                personaje->cantidad_elementos --;
+                personaje->mochila[personaje->elemento_en_uso] = personaje->mochila[personaje->cantidad_elementos];
+            }
+            personaje->elemento_en_uso = NULO;
 
-        printf("Se han acabado los movimientos de tu herramienta en uso. \n");
-    } else {
-        personaje->mochila[personaje->elemento_en_uso].movimientos_restantes --;
+            printf("Se han acabado los movimientos de tu herramienta en uso. \n");
+        } else {
+            personaje->mochila[personaje->elemento_en_uso].movimientos_restantes --;
+        }
     }
 }
 
@@ -521,7 +544,7 @@ void modificar_visibilidad(juego_t* juego) {
 /*
  * Pre: -
  * Post: Penaliza al jugador si está sobre un obstáculo, sumando al tiempo perdido. E informa al usuario con un mensaje.
- *       ARBOL -> Suma al tiempo perdido PENALIZACION_ARBOL (Si es Pardo, suma PENALIZACION_ARBOL / 2)
+ *       ARBOL -> Suma al tiempo perdido PENALIZACION_ARBOL (Si es Pardo, - BONIFICACION_ARBOL_PARDO%)
  *       PIEDRA -> Suma al tiempo perdido PENALIZACION_PIEDRA (Si es Polar, no suma nada)
  *       KOALA -> Envía a columna 0 en una posición aleatoria
  */
@@ -533,7 +556,7 @@ void penalizar_obstaculo(juego_t* juego) {
 
         switch (obstaculo) {
             case ARBOL:
-                if(juego->personaje.tipo == PARDO) {
+                if (juego->personaje.tipo == PARDO) {
                     penalizacion = PENALIZACION_ARBOL - ((BONIFICACION_ARBOL_PARDO / 100) * PENALIZACION_ARBOL);
                     printf("Bah, ¿viste venir ese árbol %s? Al menos eres Pardo y solo perdiste %.0f %s de tiempo! \n", EMOJI_ARBOL, penalizacion, (penalizacion == 1 ? "segundo" : "segundos"));
                 } else {
@@ -543,7 +566,7 @@ void penalizar_obstaculo(juego_t* juego) {
                 break;
 
             case PIEDRA:
-                if(juego->personaje.tipo == POLAR) {
+                if (juego->personaje.tipo == POLAR) {
                     printf("Las piedras %s no pueden contra Polar, sigamos nuestro camino :) \n", EMOJI_PIEDRA);
                 } else {
                     penalizacion = PENALIZACION_PIEDRA;
@@ -555,21 +578,17 @@ void penalizar_obstaculo(juego_t* juego) {
                 juego->personaje.ultimo_movimiento = DERECHA;
                 juego->personaje.posicion = generar_posicion_aleatoria(NULO, 0);
 
-                if (juego->personaje.elemento_en_uso != NULO) {
-                    desgastar_herramienta((&juego->personaje));
-                    modificar_visibilidad(juego);
-                }
+                printf("Los Koalas %s son una desgracia para nuestra misión! Empezamos desde la columna inicial :( \n", EMOJI_KOALA);
 
                 recoger_herramienta(juego);
                 penalizar_obstaculo(juego);
 
-                printf("Los Koalas %s son una desgracia para nuestra misión! Empezamos desde la columna inicial :( \n", EMOJI_KOALA);
                 break;
         }
 
         juego->personaje.tiempo_perdido += penalizacion;
 
-        sleep(DELAY_CORTO);
+        // sleep(DELAY_CORTO);
     }
 }
 
@@ -616,18 +635,13 @@ void hacer_movimiento(juego_t* juego, char jugada) {
     if (movimiento_valido) {
         juego->personaje.ultimo_movimiento = jugada;
 
-        if (juego->personaje.elemento_en_uso != NULO) {
-            desgastar_herramienta((&juego->personaje));
-            modificar_visibilidad(juego);
-        }
-
         recoger_herramienta(juego);
         penalizar_obstaculo(juego);
     } else {
         printf("No puedes salirte del mapa :( \n");
-        sleep(DELAY_CORTO);
     }
 }
+
 
 /*
  * Pre: Recibe una herramienta válida (LINTERNA, VELA o BENGALA).
@@ -642,8 +656,6 @@ void usar_herramienta(juego_t* juego, char herramienta) {
             if (juego->personaje.mochila[juego->personaje.elemento_en_uso].tipo == herramienta) {
                 juego->personaje.elemento_en_uso = NULO;
                 printf("Has dejado de usar tu herramienta. \n");
-                modificar_visibilidad(juego);
-                sleep(DELAY_CORTO);
             } else {
                 juego->personaje.elemento_en_uso = NULO;
                 usar_herramienta(juego, herramienta);
@@ -674,14 +686,9 @@ void usar_herramienta(juego_t* juego, char herramienta) {
                     printf("¿Una bengala que ilumina en donde quiera? No es lo que esperaba pero estoy satisfecho. \n");
                     break;
             }
-
-            desgastar_herramienta((&juego->personaje));
-            modificar_visibilidad(juego);
         } else {
             printf("No puedes usar herramientas que no tienes :( \n");
         }
-    
-        sleep(DELAY_CORTO);
     }
 }
 
@@ -697,8 +704,6 @@ void mostrar_tiempo(double tiempo_perdido) {
     } else {
         printf("Has excedido el tiempo máximo de %.0f segundos, llevas %.0f. Puedes seguir jugando o puedes presionar (%c) para reiniciar el juego. \n", TIEMPO_MAXIMO, tiempo, REINICIAR);
     }
-
-    sleep(DELAY_CORTO);
 }
 
 /*
@@ -713,8 +718,6 @@ void reiniciar_juego(juego_t* juego) {
     printf("Vamos a reiniciar el juego! \n");
     mostrar_separador();
     printf("\n");
-
-    sleep(DELAY_CORTO);
 
     inicializar_juego(juego, juego->personaje.tipo);
 }
@@ -736,6 +739,9 @@ void realizar_jugada(juego_t* juego, char jugada) {
     } else if (jugada == REINICIAR) {
         reiniciar_juego(juego);
     }
+
+    desgastar_herramienta((&juego->personaje));
+    modificar_visibilidad(juego);
 
     if (juego->personaje.tipo == PANDA && juego->personaje.tiempo_perdido >= MIN_TIEMPO_VISIBILIDAD_PANDA) {
         juego->chloe_visible = true;
@@ -793,7 +799,7 @@ void mostrar_mapa(juego_t juego, char mapa[ALTO_MAPA][ANCHO_MAPA]) {
         for (int j = 0; j < ANCHO_MAPA; j++) {
             coordenada_t posicion = { .fil = i, .col = j };
             char herramienta_en_uso = juego.personaje.mochila[juego.personaje.elemento_en_uso].tipo;
-            char emoji[10] = "";
+            char emoji[20] = "";
             strcpy(emoji, EMOJI_OSCURIDAD);
 
             switch (mapa[i][j]) {

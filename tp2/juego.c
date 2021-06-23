@@ -4,12 +4,24 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
-#include <locale.h>
 #include <string.h>
 #include "test_de_personalidad.h"
 #include "osos_contra_reloj.h"
-#include "utilidades_print.h"
 #include "utiles.h"
+
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define BLUE    "\033[34m"
+#define CYAN    "\033[36m"
+#define BOLDGREEN   "\033[1m\033[32m"
+#define BOLDYELLOW  "\033[1m\033[33m"
+#define BOLDBLUE    "\033[1m\033[34m"
+#define BOLDCYAN    "\033[1m\033[36m"
+
+#define DELAY_CORTO 1
+#define DELAY_MEDIO 5
+#define DELAY_LARGO 10
 
 #define MAX_ARGUMENTO 10
 
@@ -17,6 +29,11 @@ const static char VACIO = '-';
 const static char ARGUMENTO_PANDA[MAX_ARGUMENTO] = "PANDA";
 const static char ARGUMENTO_PARDO[MAX_ARGUMENTO] = "PARDO";
 const static char ARGUMENTO_POLAR[MAX_ARGUMENTO] = "POLAR";
+
+const static char EMOJI_PANDA[20] = "\U0001F43C";
+const static char EMOJI_POLAR[20] = "\U0001F43B\U0000200D\U00002744\U0000FE0F";
+const static char EMOJI_PARDO[20] = "\U0001F43B";
+const static char EMOJI_CHLOE[20] = "\U0001F467";
 
 const static double TIEMPO_MAXIMO = 120.00;
 const static char SEGUIR_JUGANDO = 'S';
@@ -27,6 +44,13 @@ const static int BONIFICACION_LINTERNA_PARDO = 50;
 const static int BONIFICACION_VELAS_POLAR = 50;
 const static int BONIFICACION_BENGALAS_PANDA = 2;
 
+/*
+ * Pre: -
+ * Post: Imprimirá por pantalla una línea separadora.
+ */
+void static mostrar_separador() {
+    printf("*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*\n");
+}
 
 /*
  * Pre: -
@@ -79,14 +103,21 @@ void mostrar_bienvenida_juego() {
     printf(GREEN "Bienvenido a \"Buscando a Chloe\"! \n" RESET);
     printf(BOLDBLUE "Desarrollado por: @DaniHv \n" RESET);
     mostrar_separador();
-    printf("Los osos escandalosos "BOLDBLUE"(Panda, Pardo y Polar)"RESET" y su amiga "BOLDYELLOW"Chloe"RESET" salieron al bosque a jugar. Sin embargo, olvidaron la cuarentena que les prohibe estar afuera, al oscurecer y recordar la restricción, tuvieron que apurarse para regresar, pero "BOLDCYAN"Chloe sigue escondida y debemos encontrarla antes de que anochezca.\n" RESET);
+    printf(
+        "Los osos escandalosos "BOLDBLUE"(Panda %s, Pardo %s y Polar %s)"RESET" y su amiga "BOLDYELLOW"Chloe"RESET" %s salieron al bosque a jugar."
+        "Sin embargo, olvidaron la cuarentena que les prohibe estar afuera, al oscurecer y recordar la restricción, tuvieron que apurarse para regresar, pero "BOLDCYAN"Chloe sigue escondida y debemos encontrarla antes de que anochezca.\n" RESET,
+        EMOJI_PANDA,
+        EMOJI_PARDO,
+        EMOJI_POLAR,
+        EMOJI_CHLOE
+    );
     printf("\n");
     printf("Antes de empezar y contarte todas las mecánicas del juego, te haremos un test de personalidad para determinar el escandaloso con el que jugarás. "BOLDCYAN"Cada uno de ellos cuenta con características particulares."RESET" \n");
     printf("\n");
     printf(BOLDGREEN "¡Ahora que ya sabes lo que viene, empecemos con el test! \n" RESET);
     mostrar_separador();
 
-    sleep(DELAY_LARGO);
+    // sleep(DELAY_LARGO);
     printf("\n");
 }
 
@@ -99,30 +130,30 @@ void mostrar_inicio(char personaje) {
 
     switch (personaje) {
         case PANDA:
-            printf("Bien hecho, tu escandaloso es Panda! Tus características especiales son: \n");
+            printf("Bien hecho, tu escandaloso es Panda %s! Tus características especiales son: \n", EMOJI_PANDA);
             printf("1- Por ser un genio usando el GPS, podrás ver la posición de Chloe cuando sumes 30 segundos de tiempo perdido. \n");
             printf("2- A diferencia de tus hermanos, empiezas con %i bengalas en tu mochila. \n", BONIFICACION_BENGALAS_PANDA);
             break;
 
         case PARDO:
-            printf("Bien hecho, tu escandaloso es Pardo! Tus características especiales son: \n");
+            printf("Bien hecho, tu escandaloso es Pardo %s! Tus características especiales son: \n", EMOJI_PARDO);
             printf("1- Tu linterna tiene un %i%% más movimientos restantes. \n", BONIFICACION_LINTERNA_PARDO);
             printf("2- Los árboles te quitan un %i%% menos de tiempo. \n", BONIFICACION_ARBOL_PARDO);
             break;
 
         case POLAR:
-            printf("Bien hecho, tu escandaloso es Polar! Tus características especiales son: \n");
+            printf("Bien hecho, tu escandaloso es Polar %s! Tus características especiales son: \n", EMOJI_POLAR);
             printf("1- Empiezas con un %i%% más de velas en tu mochila. \n", BONIFICACION_VELAS_POLAR);
             printf("2- Las piedras no te quitan tiempo. \n");
             break;
     }
 
     printf("\n");
-    printf("¡Recuerda que no tenemos tiempo que perder! Debes hallar a Chloe lo más pronto posible. \n");
+    printf("¡Recuerda que no tenemos tiempo que perder! Debes hallar a Chloe %s lo más pronto posible. \n", EMOJI_CHLOE);
 
     mostrar_separador();
 
-    sleep(DELAY_LARGO);
+    // sleep(DELAY_LARGO);
     printf("\n");
 }
 
@@ -174,12 +205,13 @@ void jugar(char personaje) {
     inicializar_juego(&juego, personaje);
 
     while(estado_juego(juego) != -1) {
-        mostrar_juego(juego);
-
         char movimiento;
-        solicitar_movimiento(&movimiento);
 
+        mostrar_juego(juego);
+        solicitar_movimiento(&movimiento);
         realizar_jugada(&juego, movimiento);
+
+        sleep(DELAY_CORTO);
     }
 
     system("clear");
@@ -228,7 +260,6 @@ int main(int argc, char** argv) {
     char personaje = VACIO;
     bool continuar = false;
 
-    setlocale(LC_ALL, "es_ES.utf8");
     srand ((unsigned) time(NULL));
     system("clear");
 
@@ -242,7 +273,7 @@ int main(int argc, char** argv) {
 
     do {
         jugar(personaje);
-        preguntar_seguir_jugando(&continuar); // Desactivar para evitar problemas de Chanutron
+        // preguntar_seguir_jugando(&continuar); // Desactivar para evitar problemas de Chanutron
     } while(continuar);
 
     mostrar_gracias();

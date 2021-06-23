@@ -3,7 +3,16 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "test_de_personalidad.h"
-#include "utilidades_print.h"
+
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define BLUE    "\033[34m"
+#define CYAN    "\033[36m"
+#define BOLDGREEN   "\033[1m\033[32m"
+#define BOLDYELLOW  "\033[1m\033[33m"
+#define BOLDBLUE    "\033[1m\033[34m"
+#define BOLDCYAN    "\033[1m\033[36m"
 
 #define ANIME 'A'
 #define MUSICAPOP 'M'
@@ -33,6 +42,14 @@
 #define MAX_PUNTAJE_PANDA 43
 #define MIN_PUNTAJE_PARDO 44
 #define MAX_PUNTAJE_PARDO 63
+
+/*
+ * Pre: -
+ * Post: Imprimirá por pantalla una línea separadora.
+ */
+void static mostrar_separador() {
+    printf("*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*\n");
+}
 
 /*
  * Pre: -
