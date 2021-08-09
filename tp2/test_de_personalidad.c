@@ -55,7 +55,7 @@ void static mostrar_separador() {
  * Pre: -
  * Post: Imprimirá por pantalla el mensaje de bienvenida.
  */
-void mostrar_bienvenida() {
+void static mostrar_bienvenida() {
     mostrar_separador();
     printf(GREEN "Bienvenido al test escandalosíl, con una serie de preguntas podrás identificar a que escandaloso te pareces más (Panda, Polar o Pardo). Dicho esto, empecemos :).\n" RESET);
     mostrar_separador();
@@ -65,7 +65,7 @@ void mostrar_bienvenida() {
  * Pre: -
  * Post: Devolverá TRUE si el canal enviado es válido (ANIME, MUSICAPOP o LIMPIEZA), si no, FALSE.
  */
-bool canal_valido(char canal) {
+bool static canal_valido(char canal) {
     return ((canal == ANIME) || (canal == MUSICAPOP) || (canal == LIMPIEZA)); 
 }
 
@@ -73,7 +73,7 @@ bool canal_valido(char canal) {
  * Pre: -
  * Post: Solicitará el canal al usuario hasta introducir uno válido (ANIME, MUSICAPOP o LIMPIEZA), y actualiza al canal elegido.
  */
-void solicitar_canal(char* canal) {
+void static solicitar_canal(char* canal) {
     printf("Vas a ver televisión un rato, pones el canal de: Anime (" GREEN "%c" RESET "), Musica Pop (" GREEN "%c" RESET "), Limpieza (" GREEN "%c" RESET ").\n", ANIME, MUSICAPOP, LIMPIEZA);
     scanf(" %c", canal);
     (*canal) = (char) toupper(*canal);
@@ -92,7 +92,7 @@ void solicitar_canal(char* canal) {
  * Pre: -
  * Post: Devolverá TRUE si el alimento enviado es válido (BAMBU, PESCADO o FOCAS), si no, FALSE.
  */
-bool alimento_valido(char alimento) {
+bool static alimento_valido(char alimento) {
     return ((alimento == BAMBU) || (alimento == PESCADO) || (alimento == FOCAS)); 
 }
 
@@ -100,7 +100,7 @@ bool alimento_valido(char alimento) {
  * Pre: -
  * Post: Solicitará el alimento al usuario hasta introducir uno válido (BAMBU, PESCADO, FOCAS), y actualiza al alimento elegido.
  */
-void solicitar_alimento(char* alimento) {
+void static solicitar_alimento(char* alimento) {
     printf("Solo podes guardar un alimento en tu vianda: Bambú (" GREEN "%c" RESET "), Pescado (" GREEN "%c" RESET "), Focas (" GREEN "%c" RESET ").\n", BAMBU, PESCADO, FOCAS);
     scanf(" %c", alimento);
     (*alimento) = (char) toupper(*alimento);
@@ -119,7 +119,7 @@ void solicitar_alimento(char* alimento) {
  * Pre: -
  * Post: Devolverá TRUE si el piso enviado está entre MIN_PISO y MAX_PISO (ambos inclusive), si no, FALSE.
  */
-bool piso_valido(int piso) {
+bool static piso_valido(int piso) {
     return ((piso >= MIN_PISO) && (piso <= MAX_PISO)); 
 }
 
@@ -127,7 +127,7 @@ bool piso_valido(int piso) {
  * Pre: -
  * Post: Solicitará el piso al usuario hasta introducir uno válido (MIN_PISO-MAX_PISO), y actualiza al piso elegido.
  */
-void solicitar_piso(int* piso) {
+void static solicitar_piso(int* piso) {
     printf("Te compras una torre con tus dos hermanos de %i pisos. ¿En que piso te gustaría vivir (Entre " GREEN "%i" RESET " y " GREEN "%i" RESET ")?\n", MAX_PISO, MIN_PISO, MAX_PISO);
     scanf("%i", piso);
 
@@ -144,7 +144,7 @@ void solicitar_piso(int* piso) {
  * Pre: -
  * Post: Devolverá TRUE si el grito enviado está entre MIN_GRITO y MAX_GRITO (ambos inclusive), si no, FALSE.
  */
-bool grito_valido(int piso) {
+bool static grito_valido(int piso) {
     return ((piso >= MIN_PISO) && (piso <= MAX_PISO)); 
 }
 
@@ -152,11 +152,11 @@ bool grito_valido(int piso) {
  * Pre: -
  * Post: Solicitará el grito al usuario hasta introducir uno válido (MIN_GRITO-MAX_GRITO), y actualiza al grito elegido.
  */
-void solicitar_grito(int* grito) {
+void static solicitar_grito(int* grito) {
     printf("¡Oh, una rata! ¿Que tan fuerte gritas del " GREEN "%i" RESET " al " GREEN "%i" RESET "? Siendo " GREEN "%i" RESET " no gritar y " GREEN "%i" RESET " desgarrarse la garganta.\n", MIN_GRITO, MAX_GRITO, MIN_GRITO, MAX_GRITO);
     scanf("%i", grito);
 
-    while(!piso_valido(*grito)) {
+    while(!grito_valido(*grito)) {
         printf(RED "Respuesta incorrecta!" RESET " intenta nuevamente eligiendo únicamente entre %i y %i.\n", MIN_GRITO, MAX_GRITO);
         scanf("%i", grito);
     }
@@ -170,7 +170,7 @@ void solicitar_grito(int* grito) {
  * Post: Devolverá el puntaje correspondiente al alimento recibido.
  *       (BAMBU = PUNTAJE_BAMBU, PESCADO = PUNTAJE_PESCADO, FOCAS = PUNTAJE_FOCAS)
  */
-int puntaje_alimento(char alimento) {
+int static puntaje_alimento(char alimento) {
     int puntaje;
 
     switch (alimento) {
@@ -193,7 +193,7 @@ int puntaje_alimento(char alimento) {
  * Post: Se devuelve el multiplicador correspondiente al canal recibido.
  *       (ANIME = MULTIPLICADOR_ANIME, MUSICAPOP = MULTIPLICADOR_MUSICAPOP, LIMPIEZA = MULTIPLICADOR_LIMPIEZA).
  */
-int multiplicador_canal(char canal) {
+int static multiplicador_canal(char canal) {
     int multiplicador;
 
     switch (canal) {
@@ -220,7 +220,7 @@ int multiplicador_canal(char canal) {
  * Post: Devolverá el cálculo del puntaje total basándose en la fórmula:
  *       (PUNTAJE DEL ALIMENTO * MULTIPLICADOR CANAL) + PUNTAJE_PISO + PUNTAJE_GRITO
  */
-int puntaje_total(int puntaje_alimento, int multiplicador_canal, int puntaje_piso, int puntaje_grito) {
+int static puntaje_total(int puntaje_alimento, int multiplicador_canal, int puntaje_piso, int puntaje_grito) {
     return ((puntaje_alimento * multiplicador_canal) + puntaje_piso + puntaje_grito);
 }
 
@@ -230,7 +230,7 @@ int puntaje_total(int puntaje_alimento, int multiplicador_canal, int puntaje_pis
  * Post: Devolverá el escandaloso correspondiente al puntaje enviado (Que debe estar comprendido entre 0 y 0).
  *       Tal que entre 5 y 24 es POLAR, entre 25 y 43 es PANDA y desde 43 es PARDO.
  */
-char escandaloso(int puntaje) {
+char static escandaloso(int puntaje) {
     char escandaloso;
 
     if ((puntaje >= MIN_PUNTAJE_POLAR) && (puntaje <= MAX_PUNTAJE_POLAR)) {
@@ -248,7 +248,7 @@ char escandaloso(int puntaje) {
  * Pre: -
  * Post: Imprimirá por pantalla los datos adicionales de PANDA.
 */
-void mostrar_datos_panda() {
+void static mostrar_datos_panda() {
     printf(BOLDGREEN "Algunos datos sobre Panda antes de empezar:\n" RESET);
     printf(CYAN "1-" RESET " Inseguro, sensible, se enamora rapido, tierno, vegetariano.\n");
     printf(CYAN "2-" RESET " El celular es su alma en forma rectangular.\n");
@@ -262,7 +262,7 @@ void mostrar_datos_panda() {
  * Pre: -
  * Post: Imprimirá por pantalla los datos adicionales de POLAR.
 */
-void mostrar_datos_polar() {
+void static mostrar_datos_polar() {
     printf(BOLDGREEN "Algunos datos sobre Polar antes de empezar:\n" RESET);
     printf(CYAN "1-" RESET " Callado, reacciona rápido, habla en tercera persona, demuestra pobremente sus emociones, responsable y maduro, valiente.\n");
     printf(CYAN "2-" RESET " Le encanta la limpieza ya que la mayor parte de su tiempo pasa haciendo eso, y la cocina como podemos ver casi siempre.\n");
@@ -276,7 +276,7 @@ void mostrar_datos_polar() {
  * Pre: -
  * Post: Imprimirá por pantalla los datos adicionales de PARDO.
 */
-void mostrar_datos_pardo() {
+void static mostrar_datos_pardo() {
     printf(BOLDGREEN "Algunos datos sobre Pardo antes de empezar:\n" RESET); 
     printf(CYAN "1-" RESET " Familiarizado con el área forestal.\n");
     printf(CYAN "2-" RESET " Líder, hiperactivo, ruidoso, charlatan, alegre, optimista, extrovertido, quien hace los planes, glotón, sociable, disfruta de la atención, celoso, ingenuo.\n");
@@ -290,7 +290,7 @@ void mostrar_datos_pardo() {
  * Pre: Se debe recibir un escandaloso válido (PANDA, POLAR o PARDO).
  * Post: Imprimirá por pantalla el resultado recibido y los datos adicionales correspondientes.
  */
-void mostrar_resultado(char escandaloso) {
+void static mostrar_resultado(char escandaloso) {
     printf(BOLDYELLOW "Ahora vamos con los resultados.\n" RESET);
     printf(BOLDYELLOW "**REDOBLE DE TAMBORES**\n" RESET);
     mostrar_separador();

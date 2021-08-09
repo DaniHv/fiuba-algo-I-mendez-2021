@@ -25,30 +25,30 @@
 
 #define MAX_ARGUMENTO 10
 
-const static char VACIO = '-';
-const static char ARGUMENTO_PANDA[MAX_ARGUMENTO] = "PANDA";
-const static char ARGUMENTO_PARDO[MAX_ARGUMENTO] = "PARDO";
-const static char ARGUMENTO_POLAR[MAX_ARGUMENTO] = "POLAR";
+const char VACIO = '-';
+const char ARGUMENTO_PANDA[MAX_ARGUMENTO] = "PANDA";
+const char ARGUMENTO_PARDO[MAX_ARGUMENTO] = "PARDO";
+const char ARGUMENTO_POLAR[MAX_ARGUMENTO] = "POLAR";
 
-const static char EMOJI_PANDA[20] = "\U0001F43C";
-const static char EMOJI_POLAR[20] = "\U0001F43B\U0000200D\U00002744\U0000FE0F";
-const static char EMOJI_PARDO[20] = "\U0001F43B";
-const static char EMOJI_CHLOE[20] = "\U0001F467";
+const char EMOJI_PANDA[20] = "\U0001F43C";
+const char EMOJI_POLAR[20] = "\U0001F43B\U0000200D\U00002744\U0000FE0F";
+const char EMOJI_PARDO[20] = "\U0001F43B";
+const char EMOJI_CHLOE[20] = "\U0001F467";
 
-const static double TIEMPO_MAXIMO = 120.00;
-const static char SEGUIR_JUGANDO = 'S';
-const static char SALIR = 27;
+const double TIEMPO_MAXIMO = 120.00;
+const char SEGUIR_JUGANDO = 'S';
+const char SALIR = 27;
 
-const static int BONIFICACION_ARBOL_PARDO = 50;
-const static int BONIFICACION_LINTERNA_PARDO = 50;
-const static int BONIFICACION_VELAS_POLAR = 50;
-const static int BONIFICACION_BENGALAS_PANDA = 2;
+const int BONIFICACION_ARBOL_PARDO = 50;
+const int BONIFICACION_LINTERNA_PARDO = 50;
+const int BONIFICACION_VELAS_POLAR = 50;
+const int BONIFICACION_BENGALAS_PANDA = 2;
 
 /*
  * Pre: -
  * Post: Imprimirá por pantalla una línea separadora.
  */
-void static mostrar_separador() {
+void mostrar_separador() {
     printf("*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*\n");
 }
 
@@ -98,13 +98,13 @@ void detectar_argumento_personaje(int argc, char** argv, char* personaje) {
  * Pre: -
  * Post: Muestra la bienvenida inicial del juego. Explica al usuario en que consiste el juego y que tendrá que hacer para empezar a jugar.
  */
-void mostrar_bienvenida_juego() {
+void mostrar_bienvenida() {
     mostrar_separador();
-    printf(GREEN "Bienvenido a \"Buscando a Chloe\"! \n" RESET);
+    printf(GREEN "Bienvenido a \"Travesías escandalosas en cuarentena\"! \n" RESET);
     printf(BOLDBLUE "Desarrollado por: @DaniHv \n" RESET);
     mostrar_separador();
     printf(
-        "Los osos escandalosos "BOLDBLUE"(Panda %s, Pardo %s y Polar %s)"RESET" y su amiga "BOLDYELLOW"Chloe"RESET" %s salieron al bosque a jugar."
+        "Los osos escandalosos "BOLDBLUE"(Panda %s, Pardo %s y Polar %s)"RESET" y su amiga "BOLDYELLOW"Chloe"RESET" %s salieron al bosque a jugar. "
         "Sin embargo, olvidaron la cuarentena que les prohibe estar afuera, al oscurecer y recordar la restricción, tuvieron que apurarse para regresar, pero "BOLDCYAN"Chloe sigue escondida y debemos encontrarla antes de que anochezca.\n" RESET,
         EMOJI_PANDA,
         EMOJI_PARDO,
@@ -183,6 +183,8 @@ void mostrar_victoria() {
     mostrar_separador();
     printf(GREEN "¡Has encontrado a Chloe antes de que fuera demasiado tarde! Ve a contarle a tus hermanos para regresar juntos a casa. \n" RESET);
     mostrar_separador();
+
+    printf("\n");
 }
 
 /*
@@ -191,8 +193,10 @@ void mostrar_victoria() {
  */
 void mostrar_derrota(double tiempo) {
     mostrar_separador();
-    printf("Haz perdido, te ha tomado un total de %.0f segundos. \n", tiempo);
+    printf("Haz perdido, te ha tomado un total de %.1f segundos. \n", tiempo);
     mostrar_separador();
+
+    printf("\n");
 }
 
 /*
@@ -249,11 +253,13 @@ void preguntar_seguir_jugando(bool* continuar) {
  * Pre: -
  * Post: Muestra mensaje de gracias y despedida final.
  */
-void mostrar_gracias() {
+void mostrar_despedida() {
     mostrar_separador();
     printf(BOLDGREEN "Gracias por haber jugado a " BOLDBLUE "\"Travesías escandalosas en cuarentena\""RESET" \n");
     printf(BOLDCYAN "Espero que te haya gustado. @DaniHv te envía saludos :) \n" RESET);
     mostrar_separador();
+
+    printf("\n");
 }
 
 int main(int argc, char** argv) {
@@ -266,7 +272,7 @@ int main(int argc, char** argv) {
     detectar_argumento_personaje(argc, argv, &personaje);
 
     if (personaje == VACIO) {
-        mostrar_bienvenida_juego();
+        mostrar_bienvenida();
         test_de_personalidad(&personaje);
         mostrar_inicio(personaje);
     }
@@ -276,7 +282,7 @@ int main(int argc, char** argv) {
         // preguntar_seguir_jugando(&continuar); // Desactivar para evitar problemas de Chanutron
     } while(continuar);
 
-    mostrar_gracias();
+    mostrar_despedida();
 
     return 0;
 }

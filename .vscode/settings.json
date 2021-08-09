@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "utilidades_print.h": "c",
+    "utiles.h": "c",
+    "__locale": "c",
+    "test_de_personalidad.h": "c",
+    "time.h": "c",
+    "unistd.h": "c",
+    "stdlib.h": "c",
+    "stdio.h": "c",
+    "ctype.h": "c",
+    "string.h": "c"
+  }
+}

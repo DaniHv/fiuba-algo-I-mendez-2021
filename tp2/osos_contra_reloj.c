@@ -22,13 +22,13 @@
 #define DELAY_MEDIO 5
 #define DELAY_LARGO 10
 
-const bool DEBUG_MAPA = false; // Al ser true, permite jugar con el mapa totalmente visible.
-
 #define CHLOE 'C'
 #define ARBOL 'A'
 #define PIEDRA 'R'
 #define KOALA 'K'
 #define PILA 'B'
+#define OSCURIDAD 'D'
+#define CLARIDAD 'L'
 
 #define OBSTACULO 'O'
 #define HERRAMIENTA 'H'
@@ -48,55 +48,57 @@ const bool DEBUG_MAPA = false; // Al ser true, permite jugar con el mapa totalme
 #define ANCHO_MAPA 30
 #define ALTO_MAPA 20
 
+const static bool DEBUG_MAPA = false; // Al ser true, permite jugar con el mapa totalmente visible.
+
 const static double TIEMPO_MAXIMO = 120.00;
 
-const int MOVIMIENTOS_LINTERNA = 10;
-const int MOVIMIENTOS_PILA = 5;
-const double BONIFICACION_LINTERNA_PARDO = 50.0;
+const static int MOVIMIENTOS_LINTERNA = 10;
+const static int MOVIMIENTOS_PILA = 5;
+const static double BONIFICACION_LINTERNA_PARDO = 50.0;
 
-const int CANTIDAD_VELAS_MOCHILA = 4;
-const int MOVIMIENTOS_VELA = 5;
-const double BONIFICACION_VELAS_POLAR = 50.0;
+const static int CANTIDAD_VELAS_MOCHILA = 4;
+const static int MOVIMIENTOS_VELA = 5;
+const static double BONIFICACION_VELAS_POLAR = 50.0;
 
-const int MOVIMIENTOS_BENGALA = 3;
-const int BONIFICACION_BENGALAS_PANDA = 2;
+const static int MOVIMIENTOS_BENGALA = 3;
+const static int BONIFICACION_BENGALAS_PANDA = 2;
 
-const double PENALIZACION_PIEDRA = 2.00;
+const static double PENALIZACION_PIEDRA = 2.00;
 
-const double PENALIZACION_ARBOL = 1.00;
-const double BONIFICACION_ARBOL_PARDO = 50.0;
+const static double PENALIZACION_ARBOL = 1.00;
+const static double BONIFICACION_ARBOL_PARDO = 50.0;
 
-const int NULO = -1;
+const static int NULO = -1;
 const static char VACIO = '-';
 
-const int CANTIDAD_ARBOLES_MAPA = 350;
-const int CANTIDAD_PIEDRAS_MAPA = 80;
-const int CANTIDAD_KOALAS_MAPA = 1;
-const int CANTIDAD_PILAS_MAPA = 30;
-const int CANTIDAD_VELAS_MAPA = 30;
-const int CANTIDAD_BENGALAS_MAPA = 10;
-const int CANTIDAD_KOALAS_INVOCAR = 1;
+const static int CANTIDAD_ARBOLES_MAPA = 350;
+const static int CANTIDAD_PIEDRAS_MAPA = 80;
+const static int CANTIDAD_KOALAS_MAPA = 1;
+const static int CANTIDAD_PILAS_MAPA = 30;
+const static int CANTIDAD_VELAS_MAPA = 30;
+const static int CANTIDAD_BENGALAS_MAPA = 10;
+const static int CANTIDAD_KOALAS_INVOCAR = 1;
 
-const int JUGANDO = 0;
-const int FINALIZADO = NULO;
+const static int JUGANDO = 0;
+const static int FINALIZADO = NULO;
 
-const int MIN_TIEMPO_VISIBILIDAD_PANDA = 30;
+const static int MIN_TIEMPO_VISIBILIDAD_PANDA = 30;
 
-const int MAX_DISTANCIA_BENGALA = 3;
+const static int MAX_DISTANCIA_BENGALA = 3;
 
-const char EMOJI_OSCURIDAD[20] = "\U00002B1B";
-const char EMOJI_CLARIDAD[20] = "\U00002B1C";
-const char EMOJI_PANDA[20] = "\U0001F43C";
-const char EMOJI_POLAR[20] = "\U0001F43B\U0000200D\U00002744\U0000FE0F";
-const char EMOJI_PARDO[20] = "\U0001F43B";
-const char EMOJI_LINTERNA[20] = "\U0001F526";
-const char EMOJI_PILA[20] = "\U0001F50B";
-const char EMOJI_ARBOL[20] = "\U0001F332";
-const char EMOJI_PIEDRA[20] = "\U0001FAA8";
-const char EMOJI_KOALA[20] = "\U0001F428";
-const char EMOJI_CHLOE[20] = "\U0001F467";
-const char EMOJI_VELA[20] = "\U0001F56F ";
-const char EMOJI_BENGALA[20] = "\U0001F9E8";
+const static char EMOJI_OSCURIDAD[20] = "\U00002B1B";
+const static char EMOJI_CLARIDAD[20] = "\U00002B1C";
+const static char EMOJI_PANDA[20] = "\U0001F43C";
+const static char EMOJI_POLAR[20] = "\U0001F43B\U0000200D\U00002744\U0000FE0F";
+const static char EMOJI_PARDO[20] = "\U0001F43B";
+const static char EMOJI_LINTERNA[20] = "\U0001F526";
+const static char EMOJI_PILA[20] = "\U0001F50B";
+const static char EMOJI_ARBOL[20] = "\U0001F332";
+const static char EMOJI_PIEDRA[20] = "\U0001FAA8";
+const static char EMOJI_KOALA[20] = "\U0001F428";
+const static char EMOJI_CHLOE[20] = "\U0001F467";
+const static char EMOJI_VELA[20] = "\U0001F56F ";
+const static char EMOJI_BENGALA[20] = "\U0001F9E8";
 
 
 /*
@@ -111,7 +113,7 @@ void static mostrar_separador() {
  * Pre: Puede recibir una fila o columna específica a mantener, caso contrario enviar 'NULO'.
  * Post: Genera una posición aleatoria en el mapa, en caso de haber recibido fila o columna, la conserva y genera la componente faltante.
  */
-coordenada_t generar_posicion_aleatoria(int fila, int columna) {
+coordenada_t static generar_posicion_aleatoria(int fila, int columna) {
     coordenada_t posicion;
 
     posicion.fil = (fila != NULO) ? fila : rand() % ALTO_MAPA;
@@ -121,10 +123,61 @@ coordenada_t generar_posicion_aleatoria(int fila, int columna) {
 }
 
 /*
- * Pre: Debe enviar una herramienta válida (LINTERNA, VELA, BENGALA).
+ * Pre: Debe recibir un juego inicializado y un tipo de elemento VÁLIDO (OBSTACULO o HERRAMIENTA) a buscar.
+ * Post: Devuelve el tipo de elemento ubicado en la posición recibida,
+ *       en caso no encuentre ninguna, devolverá VACIO
+ */
+char static detectar_elemento(juego_t juego, char tipo_elemento, coordenada_t posicion) {
+    char elemento = VACIO;
+    int i = 0;
+
+    switch (tipo_elemento) {
+        case OBSTACULO:
+            while((i < juego.cantidad_obstaculos) && (elemento == VACIO)) {
+                if((juego.obstaculos[i].posicion.fil == posicion.fil) && (juego.obstaculos[i].posicion.col == posicion.col)) {
+                    elemento = juego.obstaculos[i].tipo;
+                }
+
+                i++;
+            }
+            break;
+
+        case HERRAMIENTA:
+            while((i < juego.cantidad_herramientas) && (elemento == VACIO)) {
+                if((juego.herramientas[i].posicion.fil == posicion.fil) && (juego.herramientas[i].posicion.col == posicion.col)) {
+                    elemento = juego.herramientas[i].tipo;
+                }
+
+                i++;
+            }
+            break;
+    }
+
+    return elemento;
+}
+
+/*
+ * Pre: Debe recibir un juego inicializado.
+ * Post: Detecta si hay un obstáculo, herramienta, el personaje o chloe en la posición dada,
+ *       si está vacía devuelve TRUE, caso contrario FALSE.
+ */
+bool static posicion_valida(juego_t juego, coordenada_t posicion) {
+    char obstaculo = detectar_elemento(juego, OBSTACULO, posicion);
+    char herramienta = detectar_elemento(juego, HERRAMIENTA, posicion);
+
+    return (
+        !((juego.personaje.posicion.fil == posicion.fil) && (juego.personaje.posicion.col == posicion.col)) &&
+        !((juego.amiga_chloe.fil == posicion.fil) && (juego.amiga_chloe.col == posicion.col)) &&
+        (obstaculo == VACIO) &&
+        (herramienta == VACIO)
+    );
+}
+
+/*
+ * Pre: Debe recibir un personaje inicializado. Debe enviar una herramienta válida (LINTERNA, VELA, BENGALA).
  * Post: Busca la herramienta solicitada en la mochila, en caso encuentre, devuelve la posición de la primera de ellas.
  */
-int buscar_en_mochila(personaje_t personaje, char herramienta) {
+int static buscar_en_mochila(personaje_t personaje, char herramienta) {
     int posicion = NULO;
     int i = 0;
 
@@ -139,11 +192,11 @@ int buscar_en_mochila(personaje_t personaje, char herramienta) {
 }
 
 /*
- * Pre: Debe enviar un tipo válido de herramienta (LINTERNA, VELA, BENGALA o PILA) y una cantidad total válida (>= 1).
+ * Pre: Debe recibir un personaje inicializado y un tipo válido de herramienta (LINTERNA, VELA, BENGALA o PILA) y una cantidad total válida (>= 1).
  * Post: Agrega los elementos a la mochila con los usos según el personaje. En caso de ser PILA, solo suma los usos a LINTERNA.
  * Nota: Al recibir cantidad_total, puede ser usada tanto para inicializar, como para agregar al recoger.
  */
-void agregar_herramienta_mochila(personaje_t* personaje, char tipo, int cantidad_total) {
+void static agregar_herramienta_mochila(personaje_t* personaje, char tipo, int cantidad_total) {
     int movimientos = 0;
 
     switch (tipo) {
@@ -183,11 +236,11 @@ void agregar_herramienta_mochila(personaje_t* personaje, char tipo, int cantidad
 }
 
 /*
- * Pre:
+ * Pre: -
  * Post: Posiciona al personaje elegido en una posición aleatoria en la primera columna e inicializa los valores (Tiempo perdido 0, sin elemento en uso y ultimo movimiento derecha).
  *       Llena la mochila, todos con 1 linterna y con la cantidad de velas CANTIDAD_VELAS (Con + BONIFICACION_VELAS_POLAR% para POLAR) y BONIFICACION_BENGALAS_PANDA para PANDA.
  */
-void inicializar_personaje(personaje_t* personaje, char tipo_personaje) {
+void static inicializar_personaje(personaje_t* personaje, char tipo_personaje) {
     coordenada_t posicion = generar_posicion_aleatoria(NULO, 0);
 
     personaje->tipo = tipo_personaje;
@@ -217,69 +270,18 @@ void inicializar_personaje(personaje_t* personaje, char tipo_personaje) {
 }
 
 /*
- * Pre:
+ * Pre: Debe recibir un juego con al menos el personaje inicializado.
  * Post: Posiciona a chloe en una posición aleatora a lo largo del mapa,
  *       diferente a la posición inicial del personaje.
  */
-void posicionar_chloe(juego_t* juego) {
+void static posicionar_chloe(juego_t* juego) {
     coordenada_t posicion = generar_posicion_aleatoria(NULO, NULO);
 
-    while((juego->personaje.posicion.fil == posicion.fil) && (juego->personaje.posicion.col == posicion.col)) {
+    while(!posicion_valida((*juego), posicion)) {
         posicion = generar_posicion_aleatoria(NULO, NULO);
     }
 
     juego->amiga_chloe = posicion;
-}
-
-/*
- * Pre: Debe recibir un tipo de elemento VÁLIDO (OBSTACULO o HERRAMIENTA) a buscar.
- * Post: Devuelve el tipo de elemento ubicado en la posición recibida,
- *       en caso no encuentre ninguna, devolverá VACIO
- */
-char detectar_elemento(juego_t juego, char tipo_elemento, coordenada_t posicion) {
-    char elemento = VACIO;
-    int i = 0;
-
-    switch (tipo_elemento) {
-        case OBSTACULO:
-            while((i < juego.cantidad_obstaculos) && (elemento == VACIO)) {
-                if((juego.obstaculos[i].posicion.fil == posicion.fil) && (juego.obstaculos[i].posicion.col == posicion.col)) {
-                    elemento = juego.obstaculos[i].tipo;
-                }
-
-                i++;
-            }
-            break;
-
-        case HERRAMIENTA:
-            while((i < juego.cantidad_herramientas) && (elemento == VACIO)) {
-                if((juego.herramientas[i].posicion.fil == posicion.fil) && (juego.herramientas[i].posicion.col == posicion.col)) {
-                    elemento = juego.herramientas[i].tipo;
-                }
-
-                i++;
-            }
-            break;
-    }
-
-    return elemento;
-}
-
-/*
- * Pre: -
- * Post: Detecta si hay un obstáculo, herramienta, el personaje o chloe en la posición dada,
- *       si está vacía devuelve TRUE, caso contrario FALSE.
- */
-bool posicion_valida(juego_t juego, coordenada_t posicion) {
-    char obstaculo = detectar_elemento(juego, OBSTACULO, posicion);
-    char herramienta = detectar_elemento(juego, HERRAMIENTA, posicion);
-
-    return (
-        !((juego.personaje.posicion.fil == posicion.fil) && (juego.personaje.posicion.col == posicion.col)) &&
-        !((juego.amiga_chloe.fil == posicion.fil) && (juego.amiga_chloe.col == posicion.col)) &&
-        (obstaculo == VACIO) &&
-        (herramienta == VACIO)
-    );
 }
 
 /*
@@ -289,7 +291,7 @@ bool posicion_valida(juego_t juego, coordenada_t posicion) {
  * Post: Posiciona la cantidad de obstáculos solicitada en juego, asegurandose
  *       de colocarlos en una posición vacía mediante posicion_valida().
  */
-void posicionar_elementos(juego_t* juego, char tipo_elemento, char elemento, int cantidad) {
+void static posicionar_elementos(juego_t* juego, char tipo_elemento, char elemento, int cantidad) {
     for(int i = 0; i < cantidad; i++) {
         coordenada_t posicion = generar_posicion_aleatoria(NULO, NULO);
 
@@ -319,7 +321,7 @@ void posicionar_elementos(juego_t* juego, char tipo_elemento, char elemento, int
  * Pre: -
  * Post: Muestra al usuario todas las acciones que puede realizar: movimientos, herramientas, otros.
  */
-void mostrar_ayuda() {
+void static mostrar_ayuda() {
     system("clear");
 
     mostrar_separador();
@@ -332,8 +334,8 @@ void mostrar_ayuda() {
     printf("\n");
 
     printf("A lo largo den mapa tendrás los siguientes obstáculos: \n");
-    printf("(%s) Árboles - Suman %.0f %s a tu tiempo perdido. \n", EMOJI_ARBOL, PENALIZACION_ARBOL, ((PENALIZACION_ARBOL == 1) ? "segundo" : "segundos"));
-    printf("(%s) Piedras - Suman %.0f %s a tu tiempo perdido. \n", EMOJI_PIEDRA, PENALIZACION_PIEDRA, ((PENALIZACION_PIEDRA == 1) ? "segundo" : "segundos"));
+    printf("(%s) Árboles - Suman %.1f %s a tu tiempo perdido. \n", EMOJI_ARBOL, PENALIZACION_ARBOL, ((PENALIZACION_ARBOL == 1) ? "segundo" : "segundos"));
+    printf("(%s) Piedras - Suman %.1f %s a tu tiempo perdido. \n", EMOJI_PIEDRA, PENALIZACION_PIEDRA, ((PENALIZACION_PIEDRA == 1) ? "segundo" : "segundos"));
     printf("(%s) Koalas - Te envían a la primera columna del mapa. \n", EMOJI_KOALA);
 
     printf("\n");
@@ -346,7 +348,7 @@ void mostrar_ayuda() {
 
     printf("\n");
 
-    printf("Tienes límite de %.0f segundos para conseguir a Chloe! Si quieres ver tu tiempo actual presiona: (%c) \n" RESET, TIEMPO_MAXIMO, TIEMPO);
+    printf("Tienes límite de %.1f segundos para conseguir a Chloe! Si quieres ver tu tiempo actual presiona: (%c) \n" RESET, TIEMPO_MAXIMO, TIEMPO);
 
     printf("\n");
 
@@ -382,13 +384,13 @@ void inicializar_juego(juego_t* juego, char tipo_personaje) {
 }
 
 /*
- * Pre: -
+ * Pre: Debe recibir un juego inicializado.
  * Post: Detecta si el juego está finalizado si se llegó a chloe, caso afirmativo devuelve TRUE, contrario FALSE.
  */
 int estado_juego(juego_t juego) {
     int estado = JUGANDO;
 
-    if (juego.personaje.posicion.col == juego.amiga_chloe.col && juego.personaje.posicion.fil == juego.amiga_chloe.fil) {
+    if ((juego.personaje.posicion.col == juego.amiga_chloe.col) && (juego.personaje.posicion.fil == juego.amiga_chloe.fil)) {
         estado = FINALIZADO;
     }
 
@@ -396,10 +398,10 @@ int estado_juego(juego_t juego) {
 };
 
 /*
- * Pre: Debe recibir una herramienta válida (PILA, VELA o BENGALA)
+ * Pre: Debe recibir un juego inicializado.
  * Post: Eliminará la herramienta del piso y la guardará en la mochila. En caso de ser una pila, sumará USOS_LINTERNA_PILA a la linterna.
  */
-void recoger_herramienta(juego_t* juego) {
+void static recoger_herramienta(juego_t* juego) {
     char herramienta = detectar_elemento((*juego), HERRAMIENTA, juego->personaje.posicion);
 
     if (herramienta != VACIO) {
@@ -432,10 +434,10 @@ void recoger_herramienta(juego_t* juego) {
 }
 
 /*
- * Pre: Debe ser ejecuta cuando se tiene una herramienta en uso.
- * Post: Disminuye un movimiento a la herramienta en uso, si llega a cero, elimina la herramienta.
+ * Pre: Debe recibir un personaje inicializado
+ * Post: Disminuye un movimiento a la herramienta en uso (si existe), si llega a cero, elimina la herramienta (excepto LINTERNA, guardamos hasta conseguir PILAS).
  */
-void desgastar_herramienta(personaje_t* personaje) {
+void static desgastar_herramienta(personaje_t* personaje) {
     if (personaje->elemento_en_uso != NULO) {
         if (personaje->mochila[personaje->elemento_en_uso].movimientos_restantes == 0) {
             if (personaje->mochila[personaje->elemento_en_uso].tipo != LINTERNA) {
@@ -455,7 +457,7 @@ void desgastar_herramienta(personaje_t* personaje) {
  * Pre: Se debe recibir posiciones válidas del mapa para tener un resultado correcto.
  * Post: Determina si una posicion es adyacente a la posicion de referencia.
  */
-bool posicion_adyacente(coordenada_t posicion_referencia, coordenada_t posicion_evaluar) {
+bool static posicion_adyacente(coordenada_t posicion_referencia, coordenada_t posicion_evaluar) {
     return (
         ((posicion_referencia.fil - 1 <= posicion_evaluar.fil) && (posicion_referencia.fil + 1 >= posicion_evaluar.fil)) &&
         ((posicion_referencia.col - 1 <= posicion_evaluar.col) && (posicion_referencia.col + 1 >= posicion_evaluar.col))
@@ -466,47 +468,58 @@ bool posicion_adyacente(coordenada_t posicion_referencia, coordenada_t posicion_
  * Pre: Se debe recibir posiciones válidas del mapa para tener un resultado correcto.
  * Post: Determina la distancia manhattan entre dos puntos y la devuelve.
  */
-int distancia_manhattan(coordenada_t posicion_referencia, coordenada_t posicion_evaluar) {
+int static distancia_manhattan(coordenada_t posicion_referencia, coordenada_t posicion_evaluar) {
     return (abs(posicion_referencia.fil - posicion_evaluar.fil) + abs(posicion_referencia.col - posicion_evaluar.col));
 }
 
+/*
+ * Pre: Se debe recibir posiciones válidas del mapa para tener un resultado correcto, así como también una direccion válida (ARRIBA, IZQUIERDA, ABAJO, DERECHA).
+ * Post: Determina si la posición a evaluar está frente a la posición referencia (usado para LINTERNA)
+ */
+bool es_visible_frente(char direccion, coordenada_t posicion_referencia, coordenada_t posicion_evaluar) {
+    bool visible = false;
+
+    switch(direccion) {
+        case ARRIBA:
+            if ((posicion_referencia.col == posicion_evaluar.col) && posicion_referencia.fil > posicion_evaluar.fil) {
+                visible = true;
+            }
+            break;
+                
+        case IZQUIERDA:
+            if ((posicion_referencia.fil == posicion_evaluar.fil) && posicion_referencia.col > posicion_evaluar.col) {
+                visible = true;
+            }
+            break;
+
+        case ABAJO:
+            if ((posicion_referencia.col == posicion_evaluar.col) && posicion_referencia.fil < posicion_evaluar.fil) {
+                visible = true;
+            }
+            break;
+
+        case DERECHA:
+            if ((posicion_referencia.fil == posicion_evaluar.fil) && posicion_referencia.col < posicion_evaluar.col) {
+                visible = true;
+            }
+            break;
+        }
+    
+    return visible;
+}
 
 /*
- * Pre: Se debe recibir posiciones válidas del mapa para tener un resultado correcto.
+ * Pre: Se debe recibir una herramienta en uso (LINTERNA, VELA, BENGALA), ultimo movimiento (ARRIBA, IZQUIERDA, ABAJO, DERECHA) y posiciones válidas del mapa para tener un resultado correcto.
  * Post: Determina si una posición a evaluar debe ser visible (TRUE) o no (FALSE),
  *       según la herramienta que tenga activada el personaje, su último movimiento y posicion_referencia
  *       (A usar como posición actual del personaje en Linterna y Vela, y diferente en Bengala).
  */
-bool es_visible(char herramienta_en_uso, char ultimo_movimiento, coordenada_t posicion_referencia, coordenada_t posicion_evaluar) {
+bool static es_visible(char herramienta_en_uso, char ultimo_movimiento, coordenada_t posicion_referencia, coordenada_t posicion_evaluar) {
     bool visible = false;
 
     switch (herramienta_en_uso) {
         case LINTERNA:
-            switch(ultimo_movimiento) {
-                case ARRIBA:
-                    if ((posicion_referencia.col == posicion_evaluar.col) && posicion_referencia.fil > posicion_evaluar.fil) {
-                        visible = true;
-                    }
-                    break;
-                
-                case IZQUIERDA:
-                    if ((posicion_referencia.fil == posicion_evaluar.fil) && posicion_referencia.col > posicion_evaluar.col) {
-                        visible = true;
-                    }
-                    break;
-
-                case ABAJO:
-                    if ((posicion_referencia.col == posicion_evaluar.col) && posicion_referencia.fil < posicion_evaluar.fil) {
-                        visible = true;
-                    }
-                    break;
-
-                case DERECHA:
-                    if ((posicion_referencia.fil == posicion_evaluar.fil) && posicion_referencia.col < posicion_evaluar.col) {
-                        visible = true;
-                    }
-                    break;
-            }
+            visible = es_visible_frente(ultimo_movimiento, posicion_referencia, posicion_evaluar);
             break;
 
         case VELA:
@@ -514,7 +527,7 @@ bool es_visible(char herramienta_en_uso, char ultimo_movimiento, coordenada_t po
             break;
 
         case BENGALA:
-            visible = distancia_manhattan(posicion_referencia, posicion_evaluar) <= MAX_DISTANCIA_BENGALA;
+            visible = (distancia_manhattan(posicion_referencia, posicion_evaluar) <= MAX_DISTANCIA_BENGALA);
             break;
     }
 
@@ -522,11 +535,11 @@ bool es_visible(char herramienta_en_uso, char ultimo_movimiento, coordenada_t po
 }
 
 /*
- * Pre: -
+ * Pre: Debe recibir un juego inicializado.
  * Post: Actualiza la visibilidad de los obstáculos, herramientas y chloe si está en uso alguna herramienta,
  *       detectando si la posicion en cuestión es visible con es_visible().
  */
-void modificar_visibilidad(juego_t* juego) {
+void static modificar_visibilidad(juego_t* juego) {
     char herramienta_en_uso = juego->personaje.mochila[juego->personaje.elemento_en_uso].tipo;
     coordenada_t posicion_referencia = (herramienta_en_uso == BENGALA) ? generar_posicion_aleatoria(NULO, NULO) : juego->personaje.posicion;
 
@@ -548,7 +561,7 @@ void modificar_visibilidad(juego_t* juego) {
  *       PIEDRA -> Suma al tiempo perdido PENALIZACION_PIEDRA (Si es Polar, no suma nada)
  *       KOALA -> Envía a columna 0 en una posición aleatoria
  */
-void penalizar_obstaculo(juego_t* juego) {
+void static penalizar_obstaculo(juego_t* juego) {
     char obstaculo = detectar_elemento((*juego), OBSTACULO, juego->personaje.posicion);
 
     if (obstaculo != VACIO) {
@@ -558,10 +571,10 @@ void penalizar_obstaculo(juego_t* juego) {
             case ARBOL:
                 if (juego->personaje.tipo == PARDO) {
                     penalizacion = PENALIZACION_ARBOL - ((BONIFICACION_ARBOL_PARDO / 100) * PENALIZACION_ARBOL);
-                    printf("Bah, ¿viste venir ese árbol %s? Al menos eres Pardo y solo perdiste %.0f %s de tiempo! \n", EMOJI_ARBOL, penalizacion, (penalizacion == 1 ? "segundo" : "segundos"));
+                    printf("Bah, ¿viste venir ese árbol %s? Al menos eres Pardo y solo perdiste %.1f %s de tiempo! \n", EMOJI_ARBOL, penalizacion, (penalizacion == 1 ? "segundo" : "segundos"));
                 } else {
                     penalizacion = PENALIZACION_ARBOL;
-                    printf("Bah, ¿viste venir ese árbol %s? Has perdido %.0f %s de tiempo :( \n", EMOJI_ARBOL, penalizacion, (penalizacion == 1 ? "segundo" : "segundos"));
+                    printf("Bah, ¿viste venir ese árbol %s? Has perdido %.1f %s de tiempo :( \n", EMOJI_ARBOL, penalizacion, (penalizacion == 1 ? "segundo" : "segundos"));
                 }
                 break;
 
@@ -570,7 +583,7 @@ void penalizar_obstaculo(juego_t* juego) {
                     printf("Las piedras %s no pueden contra Polar, sigamos nuestro camino :) \n", EMOJI_PIEDRA);
                 } else {
                     penalizacion = PENALIZACION_PIEDRA;
-                    printf("Las piedras son enemigas no amigas %s! Te hizo perder %.0f %s de tiempo :( \n", EMOJI_PIEDRA, penalizacion, (penalizacion == 1 ? "segundo" : "segundos"));
+                    printf("Las piedras son enemigas no amigas %s! Te hizo perder %.1f %s de tiempo :( \n", EMOJI_PIEDRA, penalizacion, (penalizacion == 1 ? "segundo" : "segundos"));
                 }
                 break;
 
@@ -595,11 +608,10 @@ void penalizar_obstaculo(juego_t* juego) {
 /*
  * Pre: Debe recibir un movimiento previamente validado (ARRIBA, IZQUIERDA, ABAJO, DERECHA).
  * Post: Detecta si el movimiento realizado es válido (no puede salir del mapa de juego), si lo es, realiza el movimiento
- *       y detecta si recoge una herramienta o es penalizado por un obstáculo, y si tiene herramienta en uso, descuenta
- *       movimiento y actualiza la visibilidad del mapa.
+ *       y detecta si recoge una herramienta o es penalizado por un obstáculo.
  *       Si no es válido, informa al usuario que hizo un movimiento inválido.
  */
-void hacer_movimiento(juego_t* juego, char jugada) {
+void static hacer_movimiento(juego_t* juego, char jugada) {
     bool movimiento_valido = false;
 
     switch (jugada) {
@@ -642,13 +654,12 @@ void hacer_movimiento(juego_t* juego, char jugada) {
     }
 }
 
-
 /*
  * Pre: Recibe una herramienta válida (LINTERNA, VELA o BENGALA).
  * Post: Si tiene herramienta activa la cambia por la deseada (excepto BENGALA, que no se puede cambiar hasta que se acabe), o la desactiva en caso de ingresar la misma que ya tenía.
  *       Si no tiene herramienta activa o cambia por una nueva, se busca en la mochila, si tiene la empieza a utilizar, gasta un uso y modifica la visibilidad de los elementos.
  */
-void usar_herramienta(juego_t* juego, char herramienta) {
+void static usar_herramienta(juego_t* juego, char herramienta) {
     if (juego->personaje.elemento_en_uso != NULO) {
         if (juego->personaje.mochila[juego->personaje.elemento_en_uso].tipo == BENGALA) {
             printf("No puedes dejar de usar tu bengala antes de que se acabe! \n");
@@ -668,7 +679,7 @@ void usar_herramienta(juego_t* juego, char herramienta) {
             switch (herramienta) {
                 case LINTERNA:
                     if (juego->personaje.mochila[posicion_herramienta].movimientos_restantes > 0) {
-                        posicionar_elementos(juego, OBSTACULO, KOALA, 1);
+                        posicionar_elementos(juego, OBSTACULO, KOALA, CANTIDAD_KOALAS_INVOCAR);
                         juego->personaje.elemento_en_uso = posicion_herramienta;
                         printf("¡Empezaste a usar tu linterna! \n");
                     } else {
@@ -696,13 +707,13 @@ void usar_herramienta(juego_t* juego, char herramienta) {
  * Pre: -
  * Post: Muestra al usuario su tiempo total actual (tiempo actual + tiempo perdido). En caso su tiempo sea mayor al máximo para ganar, se le da la opción de reiniciar el juego.
  */
-void mostrar_tiempo(double tiempo_perdido) {
+void static mostrar_tiempo(double tiempo_perdido) {
     double tiempo = tiempo_actual() + tiempo_perdido;
 
     if (tiempo < TIEMPO_MAXIMO) {
-        printf("Tu tiempo actual es de %f \n", tiempo);
+        printf("Tu tiempo actual es de %.1f. ¡Qué esperas para encontrar a Chloe! \n", tiempo);
     } else {
-        printf("Has excedido el tiempo máximo de %.0f segundos, llevas %.0f. Puedes seguir jugando o puedes presionar (%c) para reiniciar el juego. \n", TIEMPO_MAXIMO, tiempo, REINICIAR);
+        printf("Has excedido el tiempo máximo de %.1f segundos, llevas %.1f. Puedes seguir jugando o puedes presionar (%c) para reiniciar el juego. \n", TIEMPO_MAXIMO, tiempo, REINICIAR);
     }
 }
 
@@ -710,7 +721,7 @@ void mostrar_tiempo(double tiempo_perdido) {
  * Pre: -
  * Post: Reinicia nuevamente el juego creando todo desde 0, con el mismo personaje.
  */
-void reiniciar_juego(juego_t* juego) {
+void static reiniciar_juego(juego_t* juego) {
     detener_cronometro();
 
     system("clear");
@@ -724,7 +735,7 @@ void reiniciar_juego(juego_t* juego) {
 
 /*
  * Pre: -
- * Post: Detecta la jugada/movimiento hecha por el usuario y ejecuta el movimiento, uso de herramienta, muestra tiempo, ayuda o reinicia el juego según sea el caso solicitado.
+ * Post: Detecta la jugada/movimiento hecha por el usuario y ejecuta el movimiento, uso/desgaste de herramienta, muestra tiempo, ayuda o reinicia el juego según sea el caso solicitado.
  *       Además, si el personaje es PANDA, detecta cuando puede empezar a ver a Chloe
  */
 void realizar_jugada(juego_t* juego, char jugada) {
@@ -750,12 +761,18 @@ void realizar_jugada(juego_t* juego, char jugada) {
 
 /*
  * Pre: -
- * Post: Llena la matriz con todos los elementos visibles: obstaculos, herramientas, chloe y el personaje.
+ * Post: Llena la matriz con todos los elementos visibles: obstaculos, herramientas, chloe, el personaje,
+ *       así como también ilumina los espacios oscuros que corresponden según la herramienta
  */
-void llenar_mapa(juego_t juego, char mapa[ALTO_MAPA][ANCHO_MAPA]) {
+void static llenar_mapa(juego_t juego, char mapa[ALTO_MAPA][ANCHO_MAPA]) {
     for (int i = 0; i < ALTO_MAPA; i++) {
         for (int j = 0; j < ANCHO_MAPA; j++) {
-            mapa[i][j] = VACIO;
+            if (juego.personaje.mochila[juego.personaje.elemento_en_uso].tipo != BENGALA) {
+                coordenada_t posicion = { .fil = i, .col = j };
+                mapa[i][j] = (es_visible(juego.personaje.mochila[juego.personaje.elemento_en_uso].tipo, juego.personaje.ultimo_movimiento, juego.personaje.posicion, posicion)) ? CLARIDAD : OSCURIDAD;
+            } else {
+                mapa[i][j] = OSCURIDAD;
+            }
         }
     }
 
@@ -782,25 +799,22 @@ void llenar_mapa(juego_t juego, char mapa[ALTO_MAPA][ANCHO_MAPA]) {
  * Pre: Debe recibir el mapa previamente lleno de los elementos que son visibles.
  * Post: Muestra al usuario el mapa de juego, con todos los elementos que puede ver, y su posición actual.
  */
-void mostrar_mapa(juego_t juego, char mapa[ALTO_MAPA][ANCHO_MAPA]) {
+void static mostrar_mapa(char mapa[ALTO_MAPA][ANCHO_MAPA]) {
     mostrar_separador();
     printf(BOLDGREEN "Mapa del juego: \n" RESET);
     mostrar_separador();
     
     printf("   ");
     for (int i = 0; i < ANCHO_MAPA; i++) {
-        printf("%2d ", (int) i + 1);
+        printf("%2d ", i + 1);
     }
     printf("\n");
 
     for (int i = 0; i < ALTO_MAPA; i++) {
-        printf("%2d ", (int) i + 1);
+        printf("%2d ", i + 1);
 
         for (int j = 0; j < ANCHO_MAPA; j++) {
-            coordenada_t posicion = { .fil = i, .col = j };
-            char herramienta_en_uso = juego.personaje.mochila[juego.personaje.elemento_en_uso].tipo;
             char emoji[20] = "";
-            strcpy(emoji, EMOJI_OSCURIDAD);
 
             switch (mapa[i][j]) {
                 case CHLOE:
@@ -842,11 +856,13 @@ void mostrar_mapa(juego_t juego, char mapa[ALTO_MAPA][ANCHO_MAPA]) {
                 case BENGALA:
                     strcpy(emoji, EMOJI_BENGALA);
                     break;
+                
+                case CLARIDAD:
+                    strcpy(emoji, EMOJI_CLARIDAD);
+                    break;
 
                 default:
-                    if ((herramienta_en_uso != BENGALA && es_visible(herramienta_en_uso, juego.personaje.ultimo_movimiento, juego.personaje.posicion, posicion)) || DEBUG_MAPA) {
-                        strcpy(emoji, EMOJI_CLARIDAD);
-                    }
+                    strcpy(emoji, EMOJI_OSCURIDAD);
             }
 
             printf("%s ", emoji);
@@ -857,26 +873,26 @@ void mostrar_mapa(juego_t juego, char mapa[ALTO_MAPA][ANCHO_MAPA]) {
 }
 
 /*
- * Pre: -
+ * Pre: Debe recibir una cantidad de elementos válida (>= 1).
  * Post: Muestra al usuario el contenido actual de su mochila: herramientas disponibles y sus movimientos restantes.
  */
-void mostrar_mochila(juego_t juego) {
+void static mostrar_mochila(elemento_mochila_t mochila[MAX_HERRAMIENTAS], int cantidad_elementos) {
     mostrar_separador();
     printf(BOLDGREEN "Elementos en tu mochila: \n" RESET);
     printf("\n");
 
-    for(int i = 0; i < juego.personaje.cantidad_elementos; i++) {
-        switch(juego.personaje.mochila[i].tipo) {
+    for(int i = 0; i < cantidad_elementos; i++) {
+        switch(mochila[i].tipo) {
             case LINTERNA:
-                printf("[" BOLDCYAN "%i" RESET "] %s Linterna (" BOLDGREEN "%c" RESET "), movimientos restantes: " BOLDBLUE "%i" RESET " \n", i + 1, EMOJI_LINTERNA, LINTERNA, juego.personaje.mochila[i].movimientos_restantes);
+                printf("[" BOLDCYAN "%i" RESET "] %s Linterna (" BOLDGREEN "%c" RESET "), movimientos restantes: " BOLDBLUE "%i" RESET " \n", i + 1, EMOJI_LINTERNA, LINTERNA, mochila[i].movimientos_restantes);
                 break;
 
             case VELA:
-                printf("[" BOLDCYAN "%i" RESET "] %s Vela (" BOLDGREEN "%c" RESET "), movimientos restantes: " BOLDBLUE "%i" RESET " \n", i + 1, EMOJI_VELA, VELA, juego.personaje.mochila[i].movimientos_restantes);
+                printf("[" BOLDCYAN "%i" RESET "] %s Vela (" BOLDGREEN "%c" RESET "), movimientos restantes: " BOLDBLUE "%i" RESET " \n", i + 1, EMOJI_VELA, VELA, mochila[i].movimientos_restantes);
                 break;
 
             case BENGALA:
-                printf("[" BOLDCYAN "%i" RESET "] %s Bengala (" BOLDGREEN "%c" RESET "), movimientos restantes: " BOLDBLUE "%i" RESET " \n", i + 1, EMOJI_BENGALA, BENGALA, juego.personaje.mochila[i].movimientos_restantes);
+                printf("[" BOLDCYAN "%i" RESET "] %s Bengala (" BOLDGREEN "%c" RESET "), movimientos restantes: " BOLDBLUE "%i" RESET " \n", i + 1, EMOJI_BENGALA, BENGALA, mochila[i].movimientos_restantes);
                 break;
         }
     }
@@ -885,7 +901,7 @@ void mostrar_mochila(juego_t juego) {
 }
 
 /*
- * Pre: -
+ * Pre: Debe recibir el juego inicializado.
  * Post: Crea la matriz de nuestro mapa, la llena con los objetos visibles y la muestra, y muestra la información de su mochila.
  */
 void mostrar_juego(juego_t juego) {
@@ -894,8 +910,8 @@ void mostrar_juego(juego_t juego) {
     llenar_mapa(juego, mapa);
 
     system("clear");
-    mostrar_mapa(juego, mapa);
-    mostrar_mochila(juego);
+    mostrar_mapa(mapa);
+    mostrar_mochila(juego.personaje.mochila, juego.personaje.cantidad_elementos);
 };
 
 /*
